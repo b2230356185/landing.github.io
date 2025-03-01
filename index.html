@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        form { max-width: 300px; margin: auto; }
+        input, button { display: block; width: 100%; margin: 10px 0; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Enter Your Details</h2>
+    <form id="dataForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="text" id="phone" placeholder="Your Phone Number" required>
+        <input type="text" id="city" placeholder="Your City" required>
+        <input type="number" id="age" placeholder="Your Age" required>
+        <button type="submit">Submit</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        document.getElementById("dataForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const formData = {
+                name: document.getElementById("name").value,
+                phone: document.getElementById("phone").value,
+                city: document.getElementById("city").value,
+                age: document.getElementById("age").value
+            };
+
+            const scriptURL = "https://script.google.com/macros/s/AKfycbxJq9MIVTuVmZZkhqPEb3WhU305pO-MAd0FvEwsEhHF0cMeuyXZ7mHD7UWrnRHkh1lP/exec"; // Replace with your URL
+
+            fetch(scriptURL, {
+                method: "POST",
+                mode: "cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Network response was not ok");
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === "success") {
+                    document.getElementById("message").innerText = "Thanks! Your data has been recorded.";
+                    document.getElementById("dataForm").reset();
+                } else {
+                    document.getElementById("message").innerText = "Error: " + data.message;
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("message").innerText = "Error! Please check the console and try again.";
+            });
+        });
+    </script>
+</body>
+</html>
